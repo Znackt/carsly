@@ -90,11 +90,12 @@ interface TransparentButtonProps {
   Buttontext: string;
   icon: React.ReactElement;
   ChevronIcon?: React.ReactElement;
+  className?: string;
 }
 
-const TransparentButton = ({Buttontext, icon, ChevronIcon}: TransparentButtonProps) => {  
+const TransparentButton = ({Buttontext, icon, ChevronIcon, className}: TransparentButtonProps) => {  
   return (
-    <div className="flex px-2 py-1 gap-1 text-[#70707a] cursor-pointer">
+    <div className={`flex px-2 py-1 gap-1 text-[#70707a] cursor-pointer ${className}`}>
       <button className="flex gap-1">
         {icon}
         {Buttontext}
