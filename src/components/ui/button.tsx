@@ -105,4 +105,16 @@ const TransparentButton = ({Buttontext, icon, ChevronIcon, className}: Transpare
   )
 }
 
-export { Button, buttonVariants, ExclusiveButton, DropMenuButton, TransparentButton };
+interface XnoxButtonProps {
+  Text: string;
+}
+
+const XnoxButton = ({Text}: XnoxButtonProps) => {
+  return (
+    <button className="bg-[#F0F2F5] text-[#121417] px-4 py-1 rounded-md">
+      {Text}
+    </button>
+  )
+}
+
+export { Button, buttonVariants, ExclusiveButton, DropMenuButton, TransparentButton, XnoxButton };
