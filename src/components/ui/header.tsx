@@ -17,7 +17,7 @@ const HeaderComponent = ({ Header }: HeaderProps) => {
     return <div className={`text-2xl font-bold px-2`}>{Header}</div>;
   }
 
-  return <div className={`text-3xl font-bold px-2`}>{Header}</div>;
+  return <div className={`text-4xl font-bold px-2`}>{Header}</div>;
 };
 
 const SubHeaderComponent = ({ SubHeader }: SubHeaderProps) => {

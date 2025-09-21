@@ -2,21 +2,23 @@ import { XnoxButton } from "./button";
 import { Header4Component } from "./Header4";
 
 interface SubTitleProps {
-  title: string;
-  description: string;
-  buttonText: string;
-  HeaderText: string;
+  title?: string;
+  description?: string;
+  buttonText?: string;
+  HeaderText?: string;
+  className?: string;
 }
 
 const SubTitle: React.FC<SubTitleProps> = ({
   title,
   description,
   buttonText,
-  HeaderText
+  HeaderText,
+  className
 }) => {
   return (
     <div className="pb-7">
-      <div className="pl-3">
+      <div className={`${className} pl-3`}>
         <Header4Component Header={HeaderText} />
       </div>
 

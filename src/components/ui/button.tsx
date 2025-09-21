@@ -61,11 +61,12 @@ function Button({
 interface ExclusiveButtonProps {
   Text: string;
   className?: string;
+  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
-const ExclusiveButton = ({ Text, className }: ExclusiveButtonProps) => {
+const ExclusiveButton = ({ Text, className, onClick }: ExclusiveButtonProps) => {
   return (
-    <button className={className}>
+    <button className={className} onClick={onClick}>
       {Text}
     </button>
   )
@@ -106,7 +107,7 @@ const TransparentButton = ({Buttontext, icon, ChevronIcon, className}: Transpare
 }
 
 interface XnoxButtonProps {
-  Text: string;
+  Text: string | undefined;
 }
 
 const XnoxButton = ({Text}: XnoxButtonProps) => {

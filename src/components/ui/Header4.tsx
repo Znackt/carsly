@@ -3,7 +3,7 @@
 import { useIsMobile } from "@/hooks/use-mobile";
 
 interface Header3Props {
-  Header: string;
+  Header: string | undefined;
 }
 
 const Header4Component = ({ Header }: Header3Props) => {
