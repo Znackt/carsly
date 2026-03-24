@@ -6,7 +6,7 @@ import { Header3Component } from "@/components/ui/Header3";
 import { DataTable } from "@/components/ui/data-table/data-table";
 
 import { reportsColumns as columns } from "@/components/ui/data-table/columns";
-import { data2, data4 } from "@/components/ui/data-table/data";
+import { data4 } from "@/components/ui/data-table/data";
 
 const Page = () => {
   const [selectedTab, setSelectedTab] = useState("weekly");

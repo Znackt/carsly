@@ -2,7 +2,7 @@ import CalendarIcon from "@/components/icons/Calendar";
 import Sparkles from "@/components/icons/sparkles";
 import Columns from "@/components/icons/Columns";
 
-import { data, data2 } from "@/components/ui/data-table/data";
+import { data2 } from "@/components/ui/data-table/data";
 import { DataTable } from "@/components/ui/data-table/data-table";
 import { DropMenuButton, ExclusiveButton } from "@/components/ui/button";
 import { bookingsColumns as columns } from "@/components/ui/data-table/columns";
