@@ -7,6 +7,7 @@ interface SubTitleProps {
   buttonText?: string;
   HeaderText?: string;
   className?: string;
+  onClick?: () => void;
 }
 
 const SubTitle: React.FC<SubTitleProps> = ({
@@ -14,7 +15,8 @@ const SubTitle: React.FC<SubTitleProps> = ({
   description,
   buttonText,
   HeaderText,
-  className
+  className,
+  onClick,
 }) => {
   return (
     <div className="pb-7">
@@ -28,7 +30,7 @@ const SubTitle: React.FC<SubTitleProps> = ({
           <span className="text-[#70707A] text-sm">{description}</span>
         </div>
         <div className="flex items-center">
-          <XnoxButton Text={buttonText} />
+          <XnoxButton Text={buttonText} onClick={onClick}/>
         </div>
       </div>
     </div>

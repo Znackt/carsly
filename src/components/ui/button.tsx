@@ -108,11 +108,12 @@ const TransparentButton = ({Buttontext, icon, ChevronIcon, className}: Transpare
 
 interface XnoxButtonProps {
   Text: string | undefined;
+  onClick?: () => void;
 }
 
-const XnoxButton = ({Text}: XnoxButtonProps) => {
+const XnoxButton = ({Text, onClick}: XnoxButtonProps) => {
   return (
-    <button className="bg-[#F0F2F5] text-[#121417] px-4 py-1 rounded-md">
+    <button onClick={onClick} className="bg-[#F0F2F5] text-[#121417] px-4 py-1 rounded-md">
       {Text}
     </button>
   )

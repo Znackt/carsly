@@ -1,9 +1,11 @@
-import { XnoxButton } from "@/components/ui/button";
+"use client";
+
+import { useRouter } from "next/navigation";
 import { HeaderComponent } from "@/components/ui/header";
-import { Header4Component } from "@/components/ui/Header4";
 import SubTitle from "@/components/ui/sub-title";
 
 const page = () => {
+  const router = useRouter();
   return (
     <div className="h-full w-full px-3">
       <div className="px-2 pb-13">
@@ -53,6 +55,7 @@ const page = () => {
           title="Subscription & Loyalty Management"
           description="Manage customer subscriptions and loyalty programs, including discounts, rewards, and membership tiers."
           buttonText="Manage"
+          onClick={() => router.push("/settings/subscription-loyalty")}
         />
       </div>
     </div>
