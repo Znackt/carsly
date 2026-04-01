@@ -1,3 +1,4 @@
+"use client";
 import CalendarIcon from "@/components/icons/Calendar";
 import Sparkles from "@/components/icons/sparkles";
 import Columns from "@/components/icons/Columns";
@@ -9,17 +10,24 @@ import { bookingsColumns as columns } from "@/components/ui/data-table/columns";
 
 import SearchComponent from "@/components/ui/SearchComponent";
 import { HeaderComponent, SubHeaderComponent } from "@/components/ui/header";
+import CreateBooking from "@/components/models/CreateBookingModal";
+import { useState } from "react";
 
 const page = () => {
+  const [open, setOpen] = useState(false);
+
   return (
     <div className="h-full w-full">
       <div className="flex flex-1 overflow-hidden justify-between px-4 pb-5">
         <HeaderComponent Header={"Bookings"} />
 
         <ExclusiveButton
+          onClick={() => setOpen(true)}
           Text="Create new booking"
           className="border px-4 py-2 flex rounded-md bg-[#0d80f2] text-[#fafafa] font-semibold"
         />
+
+        {open && <CreateBooking onClose={() => setOpen(false)} />}
       </div>
 
       <div className="sub-header px-4 flex justify-between">
