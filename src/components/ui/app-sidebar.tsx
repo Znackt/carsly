@@ -8,6 +8,8 @@ import {
   ToolCase,
   WandSparkles,
   TriangleAlert,
+  SlidersHorizontal,
+  MessageCircle,
 } from "lucide-react";
 
 import {
@@ -59,6 +61,19 @@ const uppercontents = [
   },
 ];
 
+const operatortools = [
+  {
+    title: "Booking Config",
+    url: "/settings/booking-config",
+    icon: SlidersHorizontal,
+  },
+  {
+    title: "WhatsApp Simulator",
+    url: "/settings/whatsapp-simulator",
+    icon: MessageCircle,
+  },
+];
+
 const bottomcontents = [
   {
     title: "Issue Logs",
@@ -83,6 +98,26 @@ export function AppSidebar() {
           <SidebarGroupContent className="pt-2">
             <SidebarMenu>
               {uppercontents.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton asChild>
+                    <a href={item.url}>
+                      <item.icon />
+                      <span>{item.title}</span>
+                    </a>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup>
+          <SidebarGroupLabel className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+            Operator Tools
+          </SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {operatortools.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
                     <a href={item.url}>
