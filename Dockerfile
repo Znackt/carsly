@@ -1,26 +1,32 @@
-# ------------------------------
-# 1️⃣ Base Image
-# ------------------------------
-    FROM node:20-alpine
+FROM node:20-alpine AS builder
+WORKDIR /app
 
-    # Set working directory
-    WORKDIR /app
-    
-    # Copy package files
-    COPY package*.json ./
-    
-    # Install dependencies
-    RUN npm install
-    
-    # Copy rest of the project files
-    COPY . .
-    
-    # Set environment to development
-    ENV NODE_ENV=development
-    
-    # Expose port 3000
-    EXPOSE 3000
-    
-    # Run Next.js in dev mode
-    CMD ["npm", "run", "dev"]
-    
+# Install curl for debugging (optional)
+RUN apk add --no-cache ca-certificates curl
+
+# Copy package files
+COPY package*.json ./
+RUN npm ci
+
+# Copy source
+COPY . .
+
+
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
+
+# ⚠️ NEXT_PUBLIC_* MUST be set at BUILD time
+ARG NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+
+# Build (should fetch fonts from Google Fonts)
+RUN npm run build
+
+FROM node:20-alpine AS runner
+WORKDIR /app
+ENV NODE_ENV=production
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
+COPY --from=builder /app/public ./public
+EXPOSE 3000
+CMD ["node", "server.js"]

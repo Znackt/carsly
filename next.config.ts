@@ -1,7 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+   output: 'standalone',
+   font: {
+    disable: true, // Skip next/font optimization during build
+  }
 };
 
 export default nextConfig;

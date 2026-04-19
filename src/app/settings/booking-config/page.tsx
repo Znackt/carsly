@@ -90,7 +90,7 @@ function LocationsTab() {
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch(`${API_BASE}/api/v1/company/${COMPANY_ID}/locations/config`);
+      const res = await fetch(`${API_BASE}/v1/api/company/${COMPANY_ID}/locations/config`);
       if (!res.ok) throw new Error(`${res.status}`);
       const data: LocationConfig[] = await res.json();
       setLocations(data);
@@ -107,8 +107,8 @@ function LocationsTab() {
   const toggle = async (loc: LocationConfig) => {
     setSaving(loc.locationId);
     const endpoint = loc.onlineBookingPaused
-      ? `/api/v1/locations/${loc.locationId}/resume-online-bookings`
-      : `/api/v1/locations/${loc.locationId}/pause-online-bookings`;
+      ? `/v1/api/locations/${loc.locationId}/resume-online-bookings`
+      : `/v1/api/locations/${loc.locationId}/pause-online-bookings`;
     try {
       const res = await fetch(`${API_BASE}${endpoint}`, {
         method: "POST",
@@ -225,7 +225,7 @@ function CapacityTab() {
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch(`${API_BASE}/api/v1/company/${COMPANY_ID}/locations/config`);
+      const res = await fetch(`${API_BASE}/v1/api/company/${COMPANY_ID}/locations/config`);
       if (!res.ok) throw new Error(`${res.status}`);
       const data: LocationConfig[] = await res.json();
       // Flatten: one row per package per location
@@ -271,7 +271,7 @@ function CapacityTab() {
 
     try {
       for (const [locationId, caps] of Object.entries(byLocation)) {
-        const res = await fetch(`${API_BASE}/api/v1/locations/${locationId}/capacity-config`, {
+        const res = await fetch(`${API_BASE}/v1/api/locations/${locationId}/capacity-config`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -400,7 +400,7 @@ function CompanyRulesTab() {
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch(`${API_BASE}/api/v1/company/${COMPANY_ID}/settings`);
+      const res = await fetch(`${API_BASE}/v1/api/company/${COMPANY_ID}/settings`);
       if (!res.ok) throw new Error(`${res.status}`);
       setSettings(await res.json());
     } catch (e) {
@@ -421,7 +421,7 @@ function CompanyRulesTab() {
     if (!settings) return;
     setSaving(true);
     try {
-      const res = await fetch(`${API_BASE}/api/v1/company/${COMPANY_ID}/settings`, {
+      const res = await fetch(`${API_BASE}/v1/api/company/${COMPANY_ID}/settings`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(settings),
