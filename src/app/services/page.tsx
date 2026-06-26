@@ -36,7 +36,7 @@ const page = () => {
   return (
     <div className="min-h-screen bg-white">
       {/* Top Header Section */}
-      <div className="w-full pl-4 pr-6 pt-4">
+      <div className="w-full px-3 sm:pl-4 sm:pr-6 pt-4">
         <div className="flex justify-between items-center pb-3">
           <HeaderComponent Header={"Services"} />
           <ExclusiveButton
@@ -53,9 +53,9 @@ const page = () => {
         </div>
       </div>
 
-      <div className="main-div pl-6 pr-6 flex pt-4">
+      <div className="main-div px-3 sm:pl-6 sm:pr-6 flex flex-col md:flex-row pt-4 gap-4 md:gap-0">
         {/* Sidebar: Services List */}
-        <div className="flex flex-col space-y-1 shrink-0 min-w-[240px]">
+        <div className="flex flex-col space-y-1 shrink-0 min-w-0 md:min-w-[240px] w-full md:w-auto">
           {services.map((item) => {
             const isChecked = selectedServices.includes(item);
             const isLast = lastSelected === item;
@@ -84,10 +84,10 @@ const page = () => {
         </div>
 
         {/* Main Content: Details Area */}
-        <div className="flex flex-col overflow-hidden pb-3 pl-8 flex-1 min-w-0">
+        <div className="flex flex-col overflow-hidden pb-3 pl-0 md:pl-8 flex-1 min-w-0">
           <HeaderComponent Header={"Details"} />
           
-          <div className="w-full flex justify-between items-end mt-2">
+          <div className="w-full flex flex-col sm:flex-row sm:justify-between sm:items-end mt-2 gap-2">
             <Tabs defaultValue="details">
               <TabsList variant={"line"}>
                 <TabsTrigger value="details" className="pb-2">View details</TabsTrigger>
@@ -104,7 +104,7 @@ const page = () => {
 
           {/* Details Content Grid */}
           <div className="flex flex-col pt-4">
-            <div className="grid grid-cols-2 gap-y-2 gap-x-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-2 gap-x-6">
               
               {/* Row 1 */}
               <div className="flex justify-between items-start">
@@ -143,7 +143,7 @@ const page = () => {
               </div>
               <div />
 
-              <div className="col-span-2 flex flex-col gap-y-2">
+              <div className="col-span-1 sm:col-span-2 flex flex-col gap-y-2">
                 <div className="flex justify-between pt-1">
                   <span className="font-bold text-slate-900">Price details</span>
                   <span className="text-black">Standard cost</span>
@@ -172,11 +172,11 @@ const page = () => {
             </div>
 
             {/* Footer Buttons */}
-            <div className="flex justify-end gap-4 mt-10 pb-10">
-              <button className="px-10 py-2 border border-blue-600 text-blue-900 font-semibold ro hover:bg-blue-50 transition-colors rounded-md">
+            <div className="flex flex-col sm:flex-row justify-end gap-3 sm:gap-4 mt-6 sm:mt-10 pb-6 sm:pb-10">
+              <button className="px-6 sm:px-10 py-2 border border-blue-600 text-blue-900 font-semibold ro hover:bg-blue-50 transition-colors rounded-md">
                 Edit item
               </button>
-              <button className="px-10 py-2 bg-slate-100 text-black font-semibold ro cursor-not-allowed rounded-md">
+              <button className="px-6 sm:px-10 py-2 bg-slate-100 text-black font-semibold ro cursor-not-allowed rounded-md">
                 Remove item
               </button>
             </div>

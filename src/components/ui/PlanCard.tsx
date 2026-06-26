@@ -7,7 +7,7 @@ interface PlanCardProps {
 
 const PlanCard = ({ title, description, image, onModify }: PlanCardProps) => {
   return (
-    <div className="bg-white rounded-xl shadow-sm border w-72">
+    <div className="bg-white rounded-xl shadow-sm border w-full">
       <img
         src={image}
         alt={title}

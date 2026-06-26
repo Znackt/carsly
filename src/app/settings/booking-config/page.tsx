@@ -145,7 +145,7 @@ function LocationsTab() {
       {locations.map(loc => (
         <Card key={loc.locationId} className={`py-0 overflow-hidden ${loc.onlineBookingPaused ? "border-orange-200 bg-orange-50/30" : ""}`}>
           <CardContent className="p-5">
-            <div className="flex items-start justify-between gap-4">
+            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
               <div className="flex items-start gap-3">
                 <div className={`mt-0.5 p-2 rounded-lg ${loc.onlineBookingPaused ? "bg-orange-100" : "bg-green-50"}`}>
                   <MapPin className={`w-4 h-4 ${loc.onlineBookingPaused ? "text-orange-500" : "text-green-600"}`} />
@@ -169,7 +169,7 @@ function LocationsTab() {
                         placeholder="e.g. Workshop maintenance"
                         value={reasons[loc.locationId] ?? ""}
                         onChange={e => setReasons(p => ({ ...p, [loc.locationId]: e.target.value }))}
-                        className="h-8 text-sm w-72"
+                        className="h-8 text-sm w-full sm:w-72"
                       />
                     </div>
                   )}
@@ -178,7 +178,7 @@ function LocationsTab() {
                   )}
                 </div>
               </div>
-              <div className="flex items-center gap-3 pt-1 shrink-0">
+              <div className="flex items-center gap-3 pt-1 shrink-0 self-end sm:self-auto">
                 <span className="text-sm text-[#70707A]">{loc.onlineBookingPaused ? "Paused" : "Accepting"}</span>
                 <Switch
                   checked={!loc.onlineBookingPaused}
@@ -306,7 +306,7 @@ function CapacityTab() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <p className="text-sm text-[#70707A]">
           Set daily slot limits per package. Online = WhatsApp-bookable. Offline = walk-in / staff reserved.
         </p>
@@ -456,8 +456,8 @@ function CompanyRulesTab() {
   ];
 
   return (
-    <div className="space-y-5 max-w-2xl">
-      <div className="flex items-center justify-between">
+    <div className="space-y-5 max-w-full sm:max-w-2xl">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <p className="text-sm text-[#70707A]">Company-wide rules applied across all locations.</p>
         <ExclusiveButton
           Text={saving ? "Saving..." : "Save Changes"}
@@ -470,7 +470,7 @@ function CompanyRulesTab() {
       {/* Master toggle */}
       <Card className="py-0">
         <CardContent className="p-5">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div>
               <p className="font-semibold text-[#121417]">Global online booking</p>
               <p className="text-sm text-[#70707A] mt-0.5">
@@ -491,7 +491,7 @@ function CompanyRulesTab() {
       {rules.map(rule => (
         <Card key={rule.key} className="py-0">
           <CardContent className="p-5">
-            <div className="flex items-center justify-between gap-6">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-6">
               <div className="flex-1">
                 <p className="font-semibold text-[#121417]">{rule.label}</p>
                 <p className="text-sm text-[#70707A] mt-0.5">{rule.desc}</p>
@@ -525,7 +525,7 @@ function CompanyRulesTab() {
 
 export default function BookingConfigPage() {
   return (
-    <div className="h-full w-full px-4 pb-10">
+    <div className="h-full w-full px-3 sm:px-4 pb-10">
       <div className="pl-1 pb-2 text-sm text-[#70707A]">
         <span>Settings / </span><span className="text-[#121417]">Booking Config</span>
       </div>

@@ -8,7 +8,7 @@ const page = () => {
   const router = useRouter();
   return (
     <div className="h-full w-full px-3">
-      <div className="px-2 pb-13">
+      <div className="px-2 pb-6 sm:pb-13">
         <HeaderComponent Header={"Settings"} />
       </div>
 

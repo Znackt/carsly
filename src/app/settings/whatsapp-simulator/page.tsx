@@ -281,21 +281,21 @@ export default function WhatsAppSimulatorPage() {
   const stepIdx = STEPS.findIndex(s => s.key === activeStep);
 
   return (
-    <div className="h-full w-full px-4 pb-6">
+    <div className="h-full w-full px-3 sm:px-4 pb-6">
       {/* Breadcrumb */}
       <div className="pl-1 pb-2 text-sm text-[#70707A]">
         <span>Settings / </span><span className="text-[#121417]">WhatsApp Simulator</span>
       </div>
       <div className="pb-4">
-        <h1 className="text-4xl font-bold px-2">WhatsApp Simulator</h1>
+        <h1 className="text-2xl sm:text-4xl font-bold px-2">WhatsApp Simulator</h1>
         <p className="text-[#70707A] text-sm mt-1 px-2">Test the full booking flow against your real backend.</p>
       </div>
 
       {/* Layout */}
-      <div className="flex gap-4" style={{ height: "calc(100vh - 190px)", minHeight: 560 }}>
+      <div className="flex flex-col lg:flex-row gap-4" style={{ height: "calc(100vh - 190px)", minHeight: 560 }}>
 
         {/* ── Left: Config + Log ── */}
-        <div className="w-64 shrink-0 flex flex-col gap-3">
+        <div className="w-full lg:w-64 shrink-0 flex flex-col gap-3">
           <div className="bg-[#0a0f0d] rounded-xl border border-[#1e2e20] p-4 flex flex-col gap-3">
             <p className="text-[10px] font-semibold text-[#4a6b4e] uppercase tracking-wider">Config</p>
 
@@ -426,7 +426,7 @@ export default function WhatsAppSimulatorPage() {
         </div>
 
         {/* ── Right: Inspector ── */}
-        <div className="flex-1 min-w-0 flex flex-col gap-3">
+        <div className="w-full lg:flex-1 min-w-0 flex flex-col gap-3">
           {/* Step tracker */}
           <div className="bg-[#0a0f0d] rounded-xl border border-[#1e2e20] p-4 shrink-0">
             <p className="text-[10px] font-semibold text-[#4a6b4e] uppercase tracking-wider mb-3">Flow progress</p>

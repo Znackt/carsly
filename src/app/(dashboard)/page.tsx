@@ -100,7 +100,7 @@ export default function DashboardPage() {
       )}
 
       {/* Stat cards */}
-      <div className="w-full px-4 py-6 flex flex-col lg:flex-row md:flex-col sm:flex-row gap-4">
+      <div className="w-full px-4 py-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <StatCard
           title="Total Revenue"
           value={loadingStats ? "..." : stats?.revenue ? `₹${stats.revenue.toLocaleString("en-IN")}` : "₹0"}
@@ -119,8 +119,8 @@ export default function DashboardPage() {
       </div>
 
       {/* Upcoming bookings — today + tomorrow, no period bar */}
-      <div className="p-6">
-        <div className="flex items-center justify-between mb-4">
+      <div className="p-3 md:p-6">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between mb-4">
           <h1 className="text-2xl font-semibold">Upcoming Bookings</h1>
           <span className="text-sm text-[#70707A] bg-[#f0f2f5] px-3 py-1 rounded-full">
             Today & Tomorrow
@@ -133,9 +133,9 @@ export default function DashboardPage() {
           </div>
         )}
 
-        <div className="flex gap-6">
+        <div className="flex flex-col lg:flex-row gap-6">
           {/* Table */}
-          <div className="flex-1 min-w-0">
+          <div className="flex-1 min-w-0 overflow-x-auto">
             {loadingBooks ? (
               <div className="flex items-center justify-center py-12 text-[#70707A] text-sm border rounded-lg">
                 Loading bookings...
@@ -148,13 +148,13 @@ export default function DashboardPage() {
               <DataTable
                 columns={dashboardColumns}
                 data={bookings}
-                className="rounded-lg border shadow-xs [&_th]:py-4 [&_th]:px-6 [&_td]:py-4.5 [&_td]:px-6 text-base"
+                className="rounded-lg border shadow-xs [&_th]:py-3 [&_th]:px-3 md:[&_th]:py-4 md:[&_th]:px-6 [&_td]:py-3 [&_td]:px-3 md:[&_td]:py-4.5 md:[&_td]:px-6 text-sm md:text-base"
               />
             )}
           </div>
 
           {/* Alerts */}
-          <div className="w-64 shrink-0 px-4">
+          <div className="w-full lg:w-64 lg:shrink-0 px-0 lg:px-4">
             <h1 className="text-2xl font-semibold mb-4">Alerts</h1>
             {totalToday > 0 ? (
               <>
