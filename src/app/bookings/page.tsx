@@ -64,13 +64,13 @@ export default function BookingsPage() {
     <div className="min-h-screen bg-white">
       {/* ✅ Header + Create Button (teammate's UI + your structure) */}
       <div className="px-4 py-3 border-b bg-white">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between flex-wrap gap-2">
           <HeaderComponent Header="Bookings" />
           <div className="flex items-center gap-3">
             <ExclusiveButton
               onClick={() => setOpen(true)}
               Text="Create new booking"
-              className="border px-4 py-2 flex rounded-md bg-[#0d80f2] text-[#fafafa] font-semibold"
+              className="border px-3 sm:px-4 py-2 flex rounded-md bg-[#0d80f2] text-[#fafafa] font-semibold text-sm sm:text-base"
             />
             {open && <CreateBooking onClose={() => setOpen(false)} />}
           </div>
@@ -78,7 +78,7 @@ export default function BookingsPage() {
       </div>
 
       {/* ✅ Sub-header with Search */}
-      <div className="sub-header px-4 flex justify-between">
+      <div className="sub-header px-4 flex flex-col sm:flex-row sm:justify-between gap-2">
         <div className="flex py-2">
           <SubHeaderComponent SubHeader="Bookings Overview" />
           <span className="flex border rounded-sm p-0.5">
@@ -90,8 +90,8 @@ export default function BookingsPage() {
       </div>
 
       {/* ✅ Filters: Your period buttons + teammate's dropdowns */}
-      <div className="flex justify-between pl-4 pr-8">
-        <span className="flex gap-2 px-6 my-6">
+      <div className="flex flex-col sm:flex-row sm:justify-between px-4 pr-4 sm:pl-4 sm:pr-8">
+        <span className="flex flex-wrap gap-2 px-2 sm:px-6 my-3 sm:my-6">
           {/* Your period toggle buttons */}
           {(["today", "7Days", "month"] as const).map((p) => (
             <button
@@ -118,23 +118,25 @@ export default function BookingsPage() {
 
       {/* ✅ Your error state */}
       {error && (
-        <div className="mx-10 mb-3 px-4 py-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
+        <div className="mx-3 sm:mx-6 md:mx-10 mb-3 px-4 py-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
           {error}
         </div>
       )}
 
       {/* ✅ Your data table with loading state */}
-      <div className="pl-10 pr-8">
+      <div className="px-3 sm:px-6 md:pl-10 md:pr-8">
         {loading ? (
           <div className="flex items-center justify-center py-16 text-[#70707A] text-sm">
             Loading bookings...
           </div>
         ) : (
-          <DataTable
-            columns={bookingsColumns}
-            data={rows}
-            className="rounded-lg border shadow-xs [ &_th]:py-4 [ &_th]:px-6 [ &_td]:py-4.5 [ &_td]:px-6 text-base"
-          />
+          <div className="overflow-x-auto">
+            <DataTable
+              columns={bookingsColumns}
+              data={rows}
+              className="rounded-lg border shadow-xs [ &_th]:py-4 [ &_th]:px-6 [ &_td]:py-4.5 [ &_td]:px-6 text-base"
+            />
+          </div>
         )}
       </div>
 

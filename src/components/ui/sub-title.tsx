@@ -19,12 +19,12 @@ const SubTitle: React.FC<SubTitleProps> = ({
   onClick,
 }) => {
   return (
-    <div className="pb-7">
+    <div className="pb-4 sm:pb-7">
       <div className={`${className} pl-3`}>
         <Header4Component Header={HeaderText} />
       </div>
 
-      <div className="flex justify-between px-4 py-4">
+      <div className="flex flex-col sm:flex-row sm:justify-between gap-3 px-4 py-4">
         <div className="flex flex-col">
           <span className="font-semibold">{title}</span>
           <span className="text-[#70707A] text-sm">{description}</span>

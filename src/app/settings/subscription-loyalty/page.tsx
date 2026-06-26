@@ -40,7 +40,7 @@ function CreatePlanModal({ onClose, onSaved }: { onClose: () => void; onSaved: (
 
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-      <div className="bg-white rounded-xl shadow-xl w-full max-w-md p-6">
+      <div className="bg-white rounded-xl shadow-xl w-full max-w-md p-4 sm:p-6 mx-3 sm:mx-0 max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between mb-5">
           <h2 className="text-lg font-semibold">Create Subscription Plan</h2>
           <button onClick={onClose}><X className="w-5 h-5 text-[#70707A]" /></button>
@@ -124,7 +124,7 @@ export default function SubscriptionLoyaltyPage() {
 
       {/* Loyalty points summary */}
       <div className="space-grotesk text-2xl pl-2 pb-5">Loyalty Points</div>
-      <div className="flex gap-x-3 mb-7">
+      <div className="flex flex-col sm:flex-row gap-3 sm:gap-x-3 mb-7">
         <div className="flex gap-x-3">
           <span className="flex pl-2 justify-center items-center"><StarIcon /></span>
           <span className="flex flex-col">
@@ -162,15 +162,15 @@ export default function SubscriptionLoyaltyPage() {
       {/* Plans tab */}
       {activeTab === "plans" && (
         <>
-          <div className="px-2 flex justify-between mb-4">
+          <div className="px-2 flex flex-col sm:flex-row sm:justify-between gap-2 mb-4">
             <span className="text-2xl font-bold">Plans</span>
             <ExclusiveButton
               Text="+ Create plan"
-              className="border mr-8 px-4 py-2 flex rounded-md bg-[#3241B3] text-[#fafafa] font-semibold"
+              className="border mr-0 sm:mr-8 px-4 py-2 flex rounded-md bg-[#3241B3] text-[#fafafa] font-semibold self-start"
               onClick={() => setShowModal(true)}
             />
           </div>
-          <div className="flex mt-2 ml-2 gap-x-3 mb-5">
+          <div className="flex flex-wrap mt-2 ml-2 gap-2 sm:gap-x-3 mb-5">
             <XnoxButton Text="Filter by billing" />
             <XnoxButton Text="Active only" />
           </div>
@@ -179,7 +179,7 @@ export default function SubscriptionLoyaltyPage() {
           ) : plans.length === 0 ? (
             <div className="pl-2 text-sm text-[#70707A]">No plans yet. Create your first plan.</div>
           ) : (
-            <div className="flex flex-wrap gap-5 mt-2 ml-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mt-2 ml-2">
               {plans.map(plan => (
                 <PlanCard
                   key={plan.id}
@@ -203,7 +203,7 @@ export default function SubscriptionLoyaltyPage() {
           {subscriptions.length === 0 ? (
             <div className="pl-2 text-sm text-[#70707A]">No active subscriptions.</div>
           ) : (
-            <div className="overflow-x-auto ml-2 mr-8">
+            <div className="overflow-x-auto ml-2 mr-2 sm:mr-8">
               <table className="w-full text-sm border rounded-lg overflow-hidden">
                 <thead>
                   <tr className="border-b bg-[#f8f9fa]">

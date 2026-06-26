@@ -64,7 +64,7 @@ const CreateBooking = ({ onClose }: { onClose: () => void }) => {
     >
       {/* Prevent close when clicking inside */}
       <div
-        className="w-full max-w-3xl bg-white rounded-2xl border shadow-lg p-6"
+        className="w-full max-w-3xl bg-white rounded-2xl border shadow-lg p-4 sm:p-6 max-h-[90vh] overflow-y-auto mx-3 sm:mx-0"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -89,7 +89,7 @@ const CreateBooking = ({ onClose }: { onClose: () => void }) => {
             </span>
           </div>
 
-          <div className="flex items-end gap-3 mt-3">
+          <div className="flex flex-col sm:flex-row items-start sm:items-end gap-3 mt-3">
             {/* FROM */}
             <div className="flex flex-col gap-1 relative">
               <span className="text-sm">From</span>
@@ -147,7 +147,7 @@ const CreateBooking = ({ onClose }: { onClose: () => void }) => {
             </div>
 
             {/* Quick Filters */}
-            <div className="flex gap-3 ml-2">
+            <div className="flex flex-wrap gap-2 sm:gap-3 ml-0 sm:ml-2 mt-2 sm:mt-0">
               {["Today", "This Week", "This Month"].map((item) => (
                 <button
                   key={item}
@@ -163,7 +163,7 @@ const CreateBooking = ({ onClose }: { onClose: () => void }) => {
         <div className="border-t mt-2"></div>
 
         {/* Working Hours + Service Type */}
-        <div className="grid grid-cols-2 gap-4 mt-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
           <div className="flex flex-col">
             <span className="text-sm font-medium">Working Hours</span>
             <input
@@ -295,7 +295,7 @@ const CreateBooking = ({ onClose }: { onClose: () => void }) => {
             Apply discounts for specific time slots
           </span>
 
-          <div className="flex gap-3 mt-3">
+          <div className="flex flex-wrap gap-2 sm:gap-3 mt-3">
             {["Evening", "Custom", "Morning"].map((item) => (
               <button
                 key={item}
