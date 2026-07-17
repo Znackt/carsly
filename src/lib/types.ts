@@ -32,3 +32,24 @@ export interface InventoryData {
   trends: TrendItem[];
   inventoryList: InventoryItem[];
 }
+
+export interface ChartDataPoint {
+  name: string;
+  value: number;
+  label: string;
+}
+
+export interface TrendWidget {
+  id: string;
+  title: string;
+  mainStat: string;
+  subStat: string;
+  isPositive: boolean;
+  type: 'line' | 'bar';
+  chartData: ChartDataPoint[];
+}
+
+export interface AnalyticsData {
+  trends: TrendWidget[];
+  // You can add your report logs type here later
+}

@@ -31,9 +31,29 @@ export default function RootLayout({
       >
         <SidebarProvider>
           <AppSidebar />
-          <main className="w-full h-full">
-            <SidebarTrigger />
-            {children}
+          
+          {/* 
+            FIX 1: Added flex-col and h-screen so the topbar stays put 
+            while the dashboard content scrolls independently 
+          */}
+          <main className="flex flex-1 flex-col w-full h-screen overflow-hidden">
+            
+            {/* 
+              FIX 2: Made the mobile topbar a fixed height (h-14) 
+              and added shrink-0 so it never squishes 
+            */}
+            <div className="md:hidden flex h-14 items-center border-b border-gray-200 bg-white px-4 shrink-0 shadow-sm z-10">
+              <SidebarTrigger />
+            </div>
+            
+            {/* 
+              FIX 3: Wrapped children in an overflow-y-auto container 
+              and added pt-6 md:pt-8 to give the dashboard breathing room at the top 
+            */}
+            <div className="flex-1 overflow-y-auto pt-6 md:pt-8">
+              {children}
+            </div>
+            
           </main>
         </SidebarProvider>
       </body>
