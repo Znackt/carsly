@@ -4,15 +4,15 @@ import { useRef } from "react";
 
 interface SearchProps {
   Text: string;
+  className?: string;
 }
 
-const SearchComponent = ({Text}: SearchProps) => {
+const SearchComponent = ({Text, className}: SearchProps) => {
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   const handleInputChange = () => {
     if (inputRef.current) {
       console.log("Input value:", inputRef.current.value);
-      // You can use this value wherever you need it
     }
   };
 
