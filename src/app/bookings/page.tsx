@@ -12,7 +12,6 @@ import { getBookings, COMPANY_ID, BookingRow } from "@/lib/api";
 import type { BookingsTable } from "@/components/ui/data-table/columns";
 import CreateBooking from "@/components/models/CreateBookingModal";
 
-// ✅ Your status mapping logic
 const STATUS_MAP: Record<string, BookingsTable["status"]> = {
   CONFIRMED: "Confirmed",
   PENDING: "Pending", 
@@ -21,7 +20,6 @@ const STATUS_MAP: Record<string, BookingsTable["status"]> = {
   IN_PROGRESS: "Upcoming",
 };
 
-// ✅ Your data transformation function
 function toTableRow(b: BookingRow): BookingsTable {
   return {
     customer: b.customerName,
@@ -34,16 +32,14 @@ function toTableRow(b: BookingRow): BookingsTable {
 }
 
 export default function BookingsPage() {
-  // ✅ Your API states
   const [rows, setRows] = useState<BookingsTable[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [period, setPeriod] = useState("today");
-  
-  // ✅ Teammate's modal state (merged in)
   const [open, setOpen] = useState(false);
 
-  // ✅ Your API loading logic
+  const [period, setPeriod] = useState("month");
+  const [viewMode, setViewMode] = useState<"calendar" | "columns">("calendar");
+
   const load = useCallback(async () => {
     setLoading(true);
     setError(null);
@@ -62,85 +58,95 @@ export default function BookingsPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* ✅ Header + Create Button (teammate's UI + your structure) */}
-      <div className="px-4 py-3 border-b bg-white">
-        <div className="flex items-center justify-between flex-wrap gap-2">
+      <div className="px-4 sm:px-6 py-4 sm:py-5">
+        <div className="flex items-center justify-between gap-2 sm:gap-4 w-full">
           <HeaderComponent Header="Bookings" />
-          <div className="flex items-center gap-3">
+          <div className="flex items-center shrink-0">
             <ExclusiveButton
               onClick={() => setOpen(true)}
-              Text="Create new booking"
-              className="border px-3 sm:px-4 py-2 flex rounded-md bg-[#0d80f2] text-[#fafafa] font-semibold text-sm sm:text-base"
+              Text="Create new booking slot"
+              className="px-3 py-2 sm:px-5 sm:py-2.5 flex justify-center rounded-lg bg-[#4338CA] hover:bg-[#3730A3] text-white font-medium text-xs sm:text-sm transition-colors shadow-sm whitespace-nowrap"
             />
             {open && <CreateBooking onClose={() => setOpen(false)} />}
           </div>
         </div>
       </div>
 
-      {/* ✅ Sub-header with Search */}
-      <div className="sub-header px-4 flex flex-col sm:flex-row sm:justify-between gap-2">
-        <div className="flex py-2">
-          <SubHeaderComponent SubHeader="Bookings Overview" />
-          <span className="flex border rounded-sm p-0.5">
-            <CalendarIcon />
-            <Columns />
-          </span>
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between px-4 sm:px-6 py-2 gap-4">
+        <div className="flex flex-col md:flex-row md:items-center gap-4">
+          <div className="flex items-center justify-between md:justify-start gap-3">
+            <SubHeaderComponent SubHeader="Bookings Overview" />
+
+            <span className="flex items-center border rounded-md p-0.5 bg-gray-50/50">
+              <button 
+                onClick={() => setViewMode("calendar")}
+                className={`p-1 rounded-sm transition-colors ${
+                  viewMode === "calendar" 
+                    ? "bg-white border border-gray-200 shadow-sm text-gray-800" 
+                    : "text-gray-400 hover:text-gray-600"
+                }`}
+              >
+                <CalendarIcon />
+              </button>
+              <button 
+                onClick={() => setViewMode("columns")}
+                className={`p-1 rounded-sm transition-colors ${
+                  viewMode === "columns" 
+                    ? "bg-white border border-gray-200 shadow-sm text-gray-800" 
+                    : "text-gray-400 hover:text-gray-600"
+                }`}
+              >
+                <Columns />
+              </button>
+            </span>
+          </div>
+          
+          <button className="w-full sm:w-auto border border-[#4338CA] text-[#4338CA] bg-white px-4 py-2 sm:px-5 sm:py-1.5 rounded-lg text-xs sm:text-sm font-medium hover:bg-indigo-50 transition-colors">
+            Choose unavailable booking slot by days
+          </button>
         </div>
-        <SearchComponent Text="Search Bookings" />
+        
+        <div className="w-full lg:w-80">
+          <SearchComponent Text="Search Bookings" className="w-full bg-gray-50 border-gray-200" />
+        </div>
       </div>
 
-      {/* ✅ Filters: Your period buttons + teammate's dropdowns */}
-      <div className="flex flex-col sm:flex-row sm:justify-between px-4 pr-4 sm:pl-4 sm:pr-8">
-        <span className="flex flex-wrap gap-2 px-2 sm:px-6 my-3 sm:my-6">
-          {/* Your period toggle buttons */}
-          {(["today", "7Days", "month"] as const).map((p) => (
-            <button
-              key={p}
-              onClick={() => setPeriod(p)}
-              className={`px-3 py-1 rounded-sm border text-sm transition-colors ${
-                period === p
-                  ? "bg-[#0d80f2] text-white border-[#0d80f2]"
-                  : "bg-[#f0f2f5] text-[#121417] border-gray-200 hover:bg-gray-200"
-              }`}
-            >
-              {p === "today" ? "Today" : p === "7Days" ? "Last 7 Days" : "Last 30 Days"}
-            </button>
-          ))}
-          {/* Teammate's dropdown filters */}
+      <div className="relative z-20 flex flex-col sm:flex-row sm:items-center justify-between px-4 sm:px-6 py-4 gap-4 w-full">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+          <DropMenuButton Buttontext="Date" />
           <DropMenuButton Buttontext="Status" />
           <DropMenuButton Buttontext="Customer" />
           <DropMenuButton Buttontext="Source" />
-        </span>
+        </div>
         <span className="flex items-center">
-          <Sparkles />
+            <Sparkles />
         </span>
       </div>
 
-      {/* ✅ Your error state */}
       {error && (
-        <div className="mx-3 sm:mx-6 md:mx-10 mb-3 px-4 py-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
+        <div className="mx-4 sm:mx-6 mb-4 px-4 py-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
           {error}
         </div>
       )}
 
-      {/* ✅ Your data table with loading state */}
-      <div className="px-3 sm:px-6 md:pl-10 md:pr-8">
+      <div className="px-4 sm:px-6 pb-8 w-full max-w-full">
         {loading ? (
-          <div className="flex items-center justify-center py-16 text-[#70707A] text-sm">
+          <div className="flex items-center justify-center py-16 text-[#70707A] text-sm border rounded-xl shadow-sm">
             Loading bookings...
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <DataTable
-              columns={bookingsColumns}
-              data={rows}
-              className="rounded-lg border shadow-xs [ &_th]:py-4 [ &_th]:px-6 [ &_td]:py-4.5 [ &_td]:px-6 text-base"
-            />
+          <div className="overflow-x-auto border rounded-xl shadow-sm w-full">
+            <div className="inline-block min-w-full align-middle">
+              <DataTable
+                columns={bookingsColumns}
+                data={rows}
+                className="w-full text-sm [ &_th]:py-3 [ &_th]:px-4 sm:[ &_th]:py-3.5 sm:[ &_th]:px-5 [ &_th]:text-gray-600 [ &_th]:font-medium [ &_td]:py-3 [ &_td]:px-4 sm:[ &_td]:py-4 sm:[ &_td]:px-5 border-0 whitespace-nowrap"
+              />
+            </div>
           </div>
         )}
       </div>
 
-      {/* ✅ Your empty state */}
       {!loading && !error && rows.length === 0 && (
         <div className="text-center py-12 text-[#70707A] text-sm">
           No bookings found for this period.
