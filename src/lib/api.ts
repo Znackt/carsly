@@ -17,7 +17,9 @@ async function apiRequest<T>(endpoint: string, options?: RequestInit): Promise<T
     throw new Error(`API Error: ${res.status} ${res.statusText}`);
   }
 
-  return res.json();
+  // Use "as T" to satisfy TypeScript's strict generic typing
+  const text = await res.text();
+  return text ? JSON.parse(text) : ({} as T); 
 }
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -92,6 +94,15 @@ export interface AssignSubscriptionPayload {
   autoRenew: boolean;
 }
 
+// NEW: Interface mapping directly to CreateBookingRequest.java
+export interface CreateBookingPayload {
+  locationId: number;
+  packageId: number;
+  customerId: number;
+  bookingDate: string;
+  arrivalWindow: string;
+}
+
 // ── API functions ─────────────────────────────────────────────────────────────
 
 export function getDashboard(companyId: string): Promise<DashboardData> {
@@ -110,6 +121,14 @@ export function getBookings(
   return apiRequest<BookingRow[]>(
     `/v1/api/companies/${companyId}/bookings?period=${period}&startDate=${start}&endDate=${end}`
   );
+}
+
+// NEW: Function to send booking to Java Backend
+export function createBooking(companyId: string, payload: CreateBookingPayload): Promise<any> {
+  return apiRequest<any>(`/v1/api/companies/${companyId}/bookings`, {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  });
 }
 
 export function getCustomers(companyId: string, search?: string): Promise<CustomerRow[]> {

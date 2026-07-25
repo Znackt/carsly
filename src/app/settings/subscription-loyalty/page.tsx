@@ -85,13 +85,12 @@ function CreatePlanModal({ onClose, onSaved }: { onClose: () => void; onSaved: (
   );
 }
 
-// ── Page ──────────────────────────────────────────────────────────────────────
 export default function SubscriptionLoyaltyPage() {
-  const [plans, setPlans]               = useState<SubscriptionPlan[]>([]);
+  const [plans, setPlans] = useState<SubscriptionPlan[]>([]);
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
   const [loadingPlans, setLoadingPlans] = useState(true);
-  const [showModal, setShowModal]       = useState(false);
-  const [activeTab, setActiveTab]       = useState<"plans" | "subscriptions">("plans");
+  const [showModal, setShowModal] = useState(false);
+  const [activeTab, setActiveTab] = useState<"plans" | "subscriptions">("plans");
 
   const loadPlans = async () => {
     setLoadingPlans(true);
@@ -122,7 +121,6 @@ export default function SubscriptionLoyaltyPage() {
         </span>
       </div>
 
-      {/* Loyalty points summary */}
       <div className="space-grotesk text-2xl pl-2 pb-5">Loyalty Points</div>
       <div className="flex flex-col sm:flex-row gap-3 sm:gap-x-3 mb-7">
         <div className="flex gap-x-3">
@@ -148,7 +146,6 @@ export default function SubscriptionLoyaltyPage() {
         </div>
       </div>
 
-      {/* Tabs */}
       <div className="flex gap-2 pl-2 mb-6">
         {(["plans", "subscriptions"] as const).map(t => (
           <button key={t} onClick={() => setActiveTab(t)}
@@ -159,7 +156,6 @@ export default function SubscriptionLoyaltyPage() {
         ))}
       </div>
 
-      {/* Plans tab */}
       {activeTab === "plans" && (
         <>
           <div className="px-2 flex flex-col sm:flex-row sm:justify-between gap-2 mb-4">
@@ -185,7 +181,6 @@ export default function SubscriptionLoyaltyPage() {
                   key={plan.id}
                   title={plan.name}
                   description={`₹${plan.price}/${plan.billingCycle.toLowerCase()} · ${plan.description ?? ""}`}
-                  image=""
                   onModify={() => alert(`Modify ${plan.name}`)}
                 />
               ))}
@@ -194,7 +189,6 @@ export default function SubscriptionLoyaltyPage() {
         </>
       )}
 
-      {/* Subscriptions tab */}
       {activeTab === "subscriptions" && (
         <>
           <div className="px-2 mb-4">

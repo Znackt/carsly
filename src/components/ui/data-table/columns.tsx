@@ -10,7 +10,7 @@ export type BookingsTable = {
   date: string;
   time: string;
   actions?: string;
-  status: "Confirmed" | "Pending" | "Upcoming" | "Completed";
+  status: "Upcoming" | "Completed" | "Incomplete" | "Cancelled";
 };
 
 export type CustomersTable = {
@@ -75,8 +75,8 @@ const commonColumns: ColumnDef<BookingsTable>[] = [
       const status = row.getValue("status") as string;
       return (
         <Badge
-          variant={status === "Confirmed" ? "default" : "secondary"}
-          className={status === "Confirmed" ? "bg-black text-white" : ""}
+          variant={status === "Upcoming" ? "default" : "secondary"}
+          className={status === "Upcoming" ? "bg-black text-white" : ""}
         >
           {status}
         </Badge>
@@ -138,11 +138,25 @@ export const customerColumns: ColumnDef<CustomersTable>[] = [
   },
 ];
 
+// Added the interactive button here for the View action
 export const bookingsColumns: ColumnDef<BookingsTable>[] = [
   ...commonColumns,
   {
     accessorKey: "actions",
     header: "Actions",
+    cell: ({ row }) => {
+      return (
+        <button
+          onClick={() => {
+            const event = new CustomEvent("viewBooking", { detail: row.original });
+            window.dispatchEvent(event);
+          }}
+          className="text-[#4338CA] hover:text-[#3730A3] font-medium transition-colors"
+        >
+          View
+        </button>
+      );
+    },
   },
 ];
 
@@ -185,4 +199,3 @@ export const reportsColumns: ColumnDef<ReportsTable>[] = [
 ]
 
 export const dashboardColumns: ColumnDef<BookingsTable>[] = [...commonColumns];
-

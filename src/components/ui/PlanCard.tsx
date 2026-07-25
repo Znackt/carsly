@@ -1,7 +1,7 @@
 interface PlanCardProps {
   title: string
   description: string
-  image: string
+  image?: string
   onModify?: () => void
 }
 
@@ -9,9 +9,9 @@ const PlanCard = ({ title, description, image, onModify }: PlanCardProps) => {
   return (
     <div className="bg-white rounded-xl shadow-sm border w-full">
       <img
-        src={image}
+        src={image || undefined}
         alt={title}
-        className="w-full h-50 object-cover rounded-xl p-2"
+        className="w-full h-50 object-cover rounded-xl p-2 bg-gray-50"
       />
       <div className="px-4 py-4">
         <h3 className="font-semibold text-gray-800">{title}</h3>
