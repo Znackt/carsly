@@ -53,7 +53,7 @@ const commonColumns: ColumnDef<BookingsTable>[] = [
     accessorKey: "customer",
     header: "Customer",
     cell: ({ row }) => (
-      <div className="font-medium">{row.getValue("customer")}</div>
+      <div className="font-medium lg:py-2.5 lg:px-4 md:py-2 md:px-3 sm:py-1.5 sm:px-2">{row.getValue("customer")}</div>
     ),
   },
   {
