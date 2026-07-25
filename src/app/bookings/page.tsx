@@ -116,6 +116,9 @@ export default function BookingsPage() {
   const [period, setPeriod] = useState("month");
   const [viewMode, setViewMode] = useState<"calendar" | "columns">("calendar");
 
+  const [search, setSearch] = useState("");
+  const searchTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   const [sortConfig, setSortConfig] = useState<{ key: keyof BookingsTable, direction: "asc" | "desc" } | null>(null);
   const [statusFilter, setStatusFilter] = useState<string[]>([]);
   const statusOptions = ["Upcoming", "Completed", "Incomplete", "Cancelled"];
@@ -142,8 +145,25 @@ export default function BookingsPage() {
     load();
   }, [load]);
 
+  const handleSearch = (val: string) => {
+    setSearch(val);
+    if (searchTimer.current) {
+      clearTimeout(searchTimer.current);
+    }
+    searchTimer.current = setTimeout(() => {
+    }, 350);
+  };
+
   const processedRows = useMemo(() => {
     let result = [...rows];
+    if (search.trim()) {
+      const q = search.toLowerCase();
+      result = result.filter(
+        (row) =>
+          row.customer.toLowerCase().includes(q) ||
+          row.service.toLowerCase().includes(q)
+      );
+    }
 
     if (statusFilter.length > 0) {
       result = result.filter(row => statusFilter.includes(row.status));
@@ -166,13 +186,10 @@ export default function BookingsPage() {
     }
 
     return result;
-  }, [rows, statusFilter, sortConfig]);
+  }, [rows, search, statusFilter, sortConfig]);
 
-  // NEW: Connected logic to the database 
   const handleCreateBooking = async (newSlotData: any) => {
     try {
-      // 1. Sent to Database with hardcoded IDs mapping to your Java Request Payload
-      // Note: In the future, these IDs will come dynamically from the modal dropdowns
       await createBooking(COMPANY_ID, {
         locationId: 1,      
         packageId: 1,       
@@ -181,14 +198,10 @@ export default function BookingsPage() {
         arrivalWindow: "MORNING" 
       });
       
-      // 2. Fetch the fresh list directly from Database to fix refresh issue
       await load(); 
-      
-      // 3. Close Modal
       setOpen(false); 
     } catch (err) {
       console.error("Failed to create booking", err);
-      // Optional: Add a UI toast error message here
     }
   };
 
@@ -209,9 +222,9 @@ export default function BookingsPage() {
       </div>
 
       <div className="flex flex-col lg:flex-row lg:items-center justify-between px-4 sm:px-6 py-2 gap-4">
-        <div className="flex flex-col md:flex-row md:items-center gap-4">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div className="flex items-center justify-between md:justify-start gap-3">
-            <SubHeaderComponent SubHeader="Bookings Overview" />
+            <SubHeaderComponent SubHeader="Bookings Overview" className="md:text-md"/>
             <span className="flex items-center border rounded-md p-0.5 bg-gray-50/50">
               <button 
                 onClick={() => setViewMode("calendar")}
@@ -232,8 +245,13 @@ export default function BookingsPage() {
           </button>
         </div>
         
-        <div className="w-full lg:w-80">
-          <SearchComponent Text="Search Bookings" className="w-full bg-gray-50 border-gray-200" />
+        <div className="w-full lg:w-70 flex-shrink-0">
+          <SearchComponent 
+            Text="Search Bookings" 
+            className="w-full bg-gray-50 border-gray-200"
+            value={search}
+            onChange={(e: any) => handleSearch(e.target ? e.target.value : e)} 
+          />
         </div>
       </div>
 
@@ -309,7 +327,7 @@ export default function BookingsPage() {
             
             <div className="space-y-4 border rounded-xl p-4 bg-gray-50/50">
               <div className="flex flex-col">
-                <span className="text-sm text-gray-500">Name</span>
+                <span className="text-lg text-gray-500">Name</span>
                 <span className="font-medium text-gray-900">{viewingCustomer.customer}</span>
               </div>
               <div className="flex flex-col">

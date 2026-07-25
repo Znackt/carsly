@@ -5,9 +5,11 @@ import { useRef } from "react";
 interface SearchProps {
   Text: string;
   className?: string;
+  value?: string; 
+  onChange?: (e: any) => void;
 }
 
-const SearchComponent = ({Text, className}: SearchProps) => {
+const SearchComponent = ({Text, className, value, onChange}: SearchProps) => {
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   const handleInputChange = () => {
@@ -22,8 +24,9 @@ const SearchComponent = ({Text, className}: SearchProps) => {
         <input 
           type="text" 
           ref={inputRef}
+          value={value}
           placeholder={Text}
-          onChange={(e) => e.target.value}
+          onChange={onChange}
           className="outline-none bg-transparent"
         />
     </div>
