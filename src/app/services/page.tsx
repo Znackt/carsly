@@ -49,7 +49,7 @@ const page = () => {
       {/* Search Bar Section */}
       <div className="sub-header px-4 flex justify-end">
         <div className="pr-2 pt-2">
-          <SearchComponent Text="Search Bookings" />
+          <SearchComponent Text="Search Services" />
         </div>
       </div>
 
