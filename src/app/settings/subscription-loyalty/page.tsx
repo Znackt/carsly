@@ -9,75 +9,192 @@ import PlanCard from "@/components/ui/PlanCard";
 import { X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import {
-  getSubscriptionPlans, createSubscriptionPlan,
-  getCompanySubscriptions, COMPANY_ID,
-  SubscriptionPlan, Subscription
+  getSubscriptionPlans,
+  createSubscriptionPlan,
+  updateSubscriptionPlan,
+  getCompanySubscriptions,
+  COMPANY_ID,
+  SubscriptionPlan,
+  Subscription,
 } from "@/lib/api";
 
-// ── Create Plan Modal ─────────────────────────────────────────────────────────
-function CreatePlanModal({ onClose, onSaved }: { onClose: () => void; onSaved: () => void }) {
-  const [form, setForm] = useState({ name: "", description: "", price: "", billingCycle: "MONTHLY" });
+function CreatePlanModal({
+  onClose,
+  onSaved,
+  existingPlan,
+}: {
+  onClose: () => void;
+  onSaved: () => void;
+  existingPlan?: SubscriptionPlan | null;
+}) {
+  const [form, setForm] = useState({
+    name: existingPlan?.name || "",
+    description: existingPlan?.description || "",
+    price: existingPlan?.price?.toString() || "",
+    billingCycle: existingPlan?.billingCycle || "MONTHLY",
+    imageUrl: existingPlan?.imageUrl || "",
+  });
   const [saving, setSaving] = useState(false);
   const [err, setErr] = useState("");
 
-  const set = (k: keyof typeof form, v: string) => setForm(p => ({ ...p, [k]: v }));
+  const set = (k: keyof typeof form, v: string) =>
+    setForm((p) => ({ ...p, [k]: v }));
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (!file.type.startsWith("image/")) {
+        setErr("Please select a valid image file.");
+        return;
+      }
+      setErr("");
+
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        set("imageUrl", reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const submit = async () => {
-    if (!form.name || !form.price) { setErr("Name and price are required"); return; }
-    setSaving(true); setErr("");
+    if (!form.name || !form.price) {
+      setErr("Name and price are required");
+      return;
+    }
+    setSaving(true);
+    setErr("");
+
+    const payload = {
+      name: form.name,
+      description: form.description,
+      price: parseFloat(form.price),
+      billingCycle: form.billingCycle,
+      ...(form.imageUrl ? { imageUrl: form.imageUrl } : {}),
+    };
+
     try {
-      await createSubscriptionPlan(COMPANY_ID, {
-        name: form.name,
-        description: form.description,
-        price: parseFloat(form.price),
-        billingCycle: form.billingCycle,
-      });
-      onSaved(); onClose();
+      if (existingPlan) {
+        await updateSubscriptionPlan(
+          COMPANY_ID,
+          existingPlan.id.toString(),
+          payload as any,
+        );
+      } else {
+        await createSubscriptionPlan(COMPANY_ID, payload as any);
+      }
+      onSaved();
+      onClose();
     } catch (e) {
       setErr(e instanceof Error ? e.message : "Failed to save plan");
-    } finally { setSaving(false); }
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
       <div className="bg-white rounded-xl shadow-xl w-full max-w-md p-4 sm:p-6 mx-3 sm:mx-0 max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between mb-5">
-          <h2 className="text-lg font-semibold">Create Subscription Plan</h2>
-          <button onClick={onClose}><X className="w-5 h-5 text-[#70707A]" /></button>
+          <h2 className="text-lg font-semibold">
+            {existingPlan
+              ? "Modify Subscription Plan"
+              : "Create Subscription Plan"}
+          </h2>
+          <button onClick={onClose}>
+            <X className="w-5 h-5 text-[#70707A]" />
+          </button>
         </div>
         <div className="flex flex-col gap-3">
           <div>
-            <label className="text-xs font-medium text-[#70707A] block mb-1">Plan Name *</label>
-            <Input value={form.name} onChange={e => set("name", e.target.value)} placeholder="e.g. Gold Plan" />
+            <label className="text-xs font-medium text-[#70707A] block mb-1">
+              Plan Name *
+            </label>
+            <Input
+              value={form.name}
+              onChange={(e) => set("name", e.target.value)}
+              placeholder="e.g. Gold Plan"
+            />
           </div>
           <div>
-            <label className="text-xs font-medium text-[#70707A] block mb-1">Description</label>
-            <Input value={form.description} onChange={e => set("description", e.target.value)}
-              placeholder="What's included" />
+            <label className="text-xs font-medium text-[#70707A] block mb-1">
+              Description
+            </label>
+            <Input
+              value={form.description}
+              onChange={(e) => set("description", e.target.value)}
+              placeholder="What's included"
+            />
           </div>
           <div>
-            <label className="text-xs font-medium text-[#70707A] block mb-1">Price (₹) *</label>
-            <Input type="number" value={form.price} onChange={e => set("price", e.target.value)} placeholder="999" />
+            <label className="text-xs font-medium text-[#70707A] block mb-1">
+              Price (₹) *
+            </label>
+            <Input
+              type="number"
+              value={form.price}
+              onChange={(e) => set("price", e.target.value)}
+              placeholder="999"
+            />
           </div>
           <div>
-            <label className="text-xs font-medium text-[#70707A] block mb-1">Billing Cycle</label>
-            <select value={form.billingCycle} onChange={e => set("billingCycle", e.target.value)}
-              className="w-full h-9 border border-input rounded-md px-3 text-sm outline-none focus:border-ring">
+            <label className="text-xs font-medium text-[#70707A] block mb-1">
+              Billing Cycle
+            </label>
+            <select
+              value={form.billingCycle}
+              onChange={(e) => set("billingCycle", e.target.value)}
+              className="w-full h-9 border border-input rounded-md px-3 text-sm outline-none focus:border-ring bg-white"
+            >
               <option value="MONTHLY">Monthly</option>
               <option value="QUARTERLY">Quarterly</option>
               <option value="YEARLY">Yearly</option>
             </select>
           </div>
+
+          {/* File Upload Input */}
+          <div>
+            <label className="text-xs font-medium text-[#70707A] block mb-1">
+              Plan Image (Optional)
+            </label>
+            <div className="flex items-center gap-3">
+              <Input
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                className="text-xs cursor-pointer p-1.5 file:bg-[#f0f2f5] file:border-0 file:rounded file:px-2 file:py-1 file:mr-2 file:text-xs file:font-medium file:text-[#121417] hover:file:bg-gray-200 transition-colors"
+              />
+              {form.imageUrl && (
+                <div className="w-9 h-9 rounded border overflow-hidden shrink-0 bg-gray-50 flex items-center justify-center">
+                  <img
+                    src={form.imageUrl}
+                    alt="Preview"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              )}
+            </div>
+          </div>
+
           {err && <p className="text-xs text-red-500">{err}</p>}
         </div>
         <div className="flex gap-3 mt-5">
-          <button onClick={onClose}
-            className="flex-1 px-4 py-2 border rounded-md text-sm text-[#70707A] hover:bg-[#f0f2f5]">
+          <button
+            onClick={onClose}
+            className="flex-1 px-4 py-2 border rounded-md text-sm text-[#70707A] hover:bg-[#f0f2f5]"
+          >
             Cancel
           </button>
-          <button onClick={submit} disabled={saving}
-            className="flex-1 px-4 py-2 rounded-md text-sm font-semibold bg-[#3241B3] text-white disabled:opacity-60">
-            {saving ? "Saving..." : "Create Plan"}
+          <button
+            onClick={submit}
+            disabled={saving}
+            className="flex-1 px-4 py-2 rounded-md text-sm font-semibold bg-[#3241B3] text-white disabled:opacity-60"
+          >
+            {saving
+              ? "Saving..."
+              : existingPlan
+                ? "Update Plan"
+                : "Create Plan"}
           </button>
         </div>
       </div>
@@ -89,22 +206,37 @@ export default function SubscriptionLoyaltyPage() {
   const [plans, setPlans] = useState<SubscriptionPlan[]>([]);
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
   const [loadingPlans, setLoadingPlans] = useState(true);
+
   const [showModal, setShowModal] = useState(false);
-  const [activeTab, setActiveTab] = useState<"plans" | "subscriptions">("plans");
+  const [editingPlan, setEditingPlan] = useState<SubscriptionPlan | null>(null);
+
+  const [activeTab, setActiveTab] = useState<"plans" | "subscriptions">(
+    "plans",
+  );
 
   const loadPlans = async () => {
     setLoadingPlans(true);
-    try { setPlans(await getSubscriptionPlans(COMPANY_ID)); }
-    catch (e) { console.error(e); }
-    finally { setLoadingPlans(false); }
+    try {
+      setPlans(await getSubscriptionPlans(COMPANY_ID));
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoadingPlans(false);
+    }
   };
 
   const loadSubscriptions = async () => {
-    try { setSubscriptions(await getCompanySubscriptions(COMPANY_ID)); }
-    catch (e) { console.error(e); }
+    try {
+      setSubscriptions(await getCompanySubscriptions(COMPANY_ID));
+    } catch (e) {
+      console.error(e);
+    }
   };
 
-  useEffect(() => { loadPlans(); loadSubscriptions(); }, []);
+  useEffect(() => {
+    loadPlans();
+    loadSubscriptions();
+  }, []);
 
   return (
     <div className="w-full h-full px-2">
@@ -124,33 +256,57 @@ export default function SubscriptionLoyaltyPage() {
       <div className="space-grotesk text-2xl pl-2 pb-5">Loyalty Points</div>
       <div className="flex flex-col sm:flex-row gap-3 sm:gap-x-3 mb-7">
         <div className="flex gap-x-3">
-          <span className="flex pl-2 justify-center items-center"><StarIcon /></span>
+          <span className="flex pl-2 justify-center items-center">
+            <StarIcon />
+          </span>
           <span className="flex flex-col">
-            <span className="space-grotesk text-[#121417] leading-5">Total Points</span>
-            <span className="font-medium text-[#70707A] leading-5">100 points</span>
+            <span className="space-grotesk text-[#121417] leading-5">
+              Total Points
+            </span>
+            <span className="font-medium text-[#70707A] leading-5">
+              100 points
+            </span>
           </span>
         </div>
         <div className="flex gap-x-3">
-          <span className="flex pl-2 items-center"><QuestionMarkIcon /></span>
+          <span className="flex pl-2 items-center">
+            <QuestionMarkIcon />
+          </span>
           <span className="flex flex-col">
-            <span className="space-grotesk text-[#121417] leading-5">How to Earn</span>
-            <span className="font-medium text-[#70707A] leading-5">₹1 spent = 1 point</span>
+            <span className="space-grotesk text-[#121417] leading-5">
+              How to Earn
+            </span>
+            <span className="font-medium text-[#70707A] leading-5">
+              ₹1 spent = 1 point
+            </span>
           </span>
         </div>
         <div className="flex gap-x-3">
-          <span className="flex pl-2 items-center"><QuestionMarkIcon /></span>
+          <span className="flex pl-2 items-center">
+            <QuestionMarkIcon />
+          </span>
           <span className="flex flex-col justify-center">
-            <span className="space-grotesk text-[#121417] leading-5">How to Redeem</span>
-            <span className="font-medium text-[#70707A] leading-5">Points for discounts on washes</span>
+            <span className="space-grotesk text-[#121417] leading-5">
+              How to Redeem
+            </span>
+            <span className="font-medium text-[#70707A] leading-5">
+              Points for discounts on washes
+            </span>
           </span>
         </div>
       </div>
 
       <div className="flex gap-2 pl-2 mb-6">
-        {(["plans", "subscriptions"] as const).map(t => (
-          <button key={t} onClick={() => setActiveTab(t)}
+        {(["plans", "subscriptions"] as const).map((t) => (
+          <button
+            key={t}
+            onClick={() => setActiveTab(t)}
             className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${
-              activeTab === t ? "bg-[#3241B3] text-white" : "bg-[#f0f2f5] text-[#121417] hover:bg-gray-200"}`}>
+              activeTab === t
+                ? "bg-[#3241B3] text-white"
+                : "bg-[#f0f2f5] text-[#121417] hover:bg-gray-200"
+            }`}
+          >
             {t === "plans" ? "Plans" : "Active Subscriptions"}
           </button>
         ))}
@@ -163,7 +319,10 @@ export default function SubscriptionLoyaltyPage() {
             <ExclusiveButton
               Text="+ Create plan"
               className="border mr-0 sm:mr-8 px-4 py-2 flex rounded-md bg-[#3241B3] text-[#fafafa] font-semibold self-start"
-              onClick={() => setShowModal(true)}
+              onClick={() => {
+                setEditingPlan(null);
+                setShowModal(true);
+              }}
             />
           </div>
           <div className="flex flex-wrap mt-2 ml-2 gap-2 sm:gap-x-3 mb-5">
@@ -173,17 +332,26 @@ export default function SubscriptionLoyaltyPage() {
           {loadingPlans ? (
             <div className="pl-2 text-sm text-[#70707A]">Loading plans...</div>
           ) : plans.length === 0 ? (
-            <div className="pl-2 text-sm text-[#70707A]">No plans yet. Create your first plan.</div>
+            <div className="pl-2 text-sm text-[#70707A]">
+              No plans yet. Create your first plan.
+            </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mt-2 ml-2">
-              {plans.map(plan => (
-                <PlanCard
-                  key={plan.id}
-                  title={plan.name}
-                  description={`₹${plan.price}/${plan.billingCycle.toLowerCase()} · ${plan.description ?? ""}`}
-                  onModify={() => alert(`Modify ${plan.name}`)}
-                />
-              ))}
+            <div className="grid grid-cols-1 md:grid-cols-2 sm:grid-cols-1 lg:grid-cols-3 gap-5 mt-2 mx-2">
+              {plans.map((plan) => {
+                const imageUrl = (plan as { imageUrl?: string }).imageUrl;
+                return (
+                  <PlanCard
+                    key={plan.id}
+                    title={plan.name}
+                    description={`₹${plan.price}/${plan.billingCycle.toLowerCase()} · ${plan.description ?? ""}`}
+                    image={imageUrl}
+                    onModify={() => {
+                      setEditingPlan(plan);
+                      setShowModal(true);
+                    }}
+                  />
+                );
+              })}
             </div>
           )}
         </>
@@ -195,30 +363,59 @@ export default function SubscriptionLoyaltyPage() {
             <span className="text-2xl font-bold">Active Subscriptions</span>
           </div>
           {subscriptions.length === 0 ? (
-            <div className="pl-2 text-sm text-[#70707A]">No active subscriptions.</div>
+            <div className="pl-2 text-sm text-[#70707A]">
+              No active subscriptions.
+            </div>
           ) : (
             <div className="overflow-x-auto ml-2 mr-2 sm:mr-8">
               <table className="w-full text-sm border rounded-lg overflow-hidden">
                 <thead>
                   <tr className="border-b bg-[#f8f9fa]">
-                    {["Code", "Customer", "Plan", "Price", "Billing", "Starts", "Ends", "Status"].map(h => (
-                      <th key={h} className="text-left px-4 py-3 font-semibold text-[#121417]">{h}</th>
+                    {[
+                      "Code",
+                      "Customer",
+                      "Plan",
+                      "Price",
+                      "Billing",
+                      "Starts",
+                      "Ends",
+                      "Status",
+                    ].map((h) => (
+                      <th
+                        key={h}
+                        className="text-left px-4 py-3 font-semibold text-[#121417]"
+                      >
+                        {h}
+                      </th>
                     ))}
                   </tr>
                 </thead>
                 <tbody>
-                  {subscriptions.map(sub => (
+                  {subscriptions.map((sub) => (
                     <tr key={sub.id} className="border-b hover:bg-[#fafafa]">
-                      <td className="px-4 py-3 font-mono text-xs">{sub.subscriptionCode}</td>
+                      <td className="px-4 py-3 font-mono text-xs">
+                        {sub.subscriptionCode}
+                      </td>
                       <td className="px-4 py-3">{sub.customerName}</td>
                       <td className="px-4 py-3">{sub.planName}</td>
                       <td className="px-4 py-3">₹{sub.price}</td>
-                      <td className="px-4 py-3 capitalize">{sub.billingCycle.toLowerCase()}</td>
-                      <td className="px-4 py-3 text-xs">{new Date(sub.startsAt).toLocaleDateString("en-IN")}</td>
-                      <td className="px-4 py-3 text-xs">{new Date(sub.endsAt).toLocaleDateString("en-IN")}</td>
+                      <td className="px-4 py-3 capitalize">
+                        {sub.billingCycle.toLowerCase()}
+                      </td>
+                      <td className="px-4 py-3 text-xs">
+                        {new Date(sub.startsAt).toLocaleDateString("en-IN")}
+                      </td>
+                      <td className="px-4 py-3 text-xs">
+                        {new Date(sub.endsAt).toLocaleDateString("en-IN")}
+                      </td>
                       <td className="px-4 py-3">
-                        <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
-                          sub.status === "ACTIVE" ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-600"}`}>
+                        <span
+                          className={`px-2 py-0.5 rounded-full text-xs font-medium ${
+                            sub.status === "ACTIVE"
+                              ? "bg-green-100 text-green-700"
+                              : "bg-gray-100 text-gray-600"
+                          }`}
+                        >
                           {sub.status}
                         </span>
                       </td>
@@ -232,7 +429,14 @@ export default function SubscriptionLoyaltyPage() {
       )}
 
       {showModal && (
-        <CreatePlanModal onClose={() => setShowModal(false)} onSaved={loadPlans} />
+        <CreatePlanModal
+          existingPlan={editingPlan}
+          onClose={() => {
+            setShowModal(false);
+            setEditingPlan(null);
+          }}
+          onSaved={loadPlans}
+        />
       )}
     </div>
   );

@@ -9,11 +9,7 @@ import { InventoryData } from '../../lib/types';
 
 export default function InventoryPage() {
   const [activeTab, setActiveTab] = useState<string>('overview');
-  
-  // FIX: Explicitly tell TypeScript this can be InventoryData OR null
   const [data, setData] = useState<InventoryData | null>(null);
-  
-  // FIX: Explicitly tell TypeScript this can be a string OR null
   const [error, setError] = useState<string | null>(null);
   
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -22,7 +18,6 @@ export default function InventoryPage() {
     const fetchInventoryData = async () => {
       try {
         setIsLoading(true);
-        // Simulating network request
         setTimeout(() => {
           setData(mockInventoryData);
           setIsLoading(false);

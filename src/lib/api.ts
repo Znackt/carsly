@@ -1,13 +1,14 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
 
-// ── Shared company ID (replace with auth context later) ───────────────────────
-export const COMPANY_ID = '100';
+export const COMPANY_ID = "100";
 
-// ── Generic request helper ────────────────────────────────────────────────────
-async function apiRequest<T>(endpoint: string, options?: RequestInit): Promise<T> {
+async function apiRequest<T>(
+  endpoint: string,
+  options?: RequestInit,
+): Promise<T> {
   const res = await fetch(`${API_BASE_URL}${endpoint}`, {
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
       ...options?.headers,
     },
     ...options,
@@ -17,12 +18,9 @@ async function apiRequest<T>(endpoint: string, options?: RequestInit): Promise<T
     throw new Error(`API Error: ${res.status} ${res.statusText}`);
   }
 
-  // Use "as T" to satisfy TypeScript's strict generic typing
   const text = await res.text();
-  return text ? JSON.parse(text) : ({} as T); 
+  return text ? JSON.parse(text) : ({} as T);
 }
-
-// ── Types ─────────────────────────────────────────────────────────────────────
 
 export interface DashboardData {
   totalBookings: number;
@@ -60,6 +58,7 @@ export interface SubscriptionPlan {
   price: number;
   billingCycle: string;
   isActive: boolean;
+  imageUrl?: string;
 }
 
 export interface Subscription {
@@ -94,7 +93,6 @@ export interface AssignSubscriptionPayload {
   autoRenew: boolean;
 }
 
-// NEW: Interface mapping directly to CreateBookingRequest.java
 export interface CreateBookingPayload {
   locationId: number;
   packageId: number;
@@ -103,72 +101,115 @@ export interface CreateBookingPayload {
   arrivalWindow: string;
 }
 
-// ── API functions ─────────────────────────────────────────────────────────────
-
 export function getDashboard(companyId: string): Promise<DashboardData> {
   return apiRequest<DashboardData>(`/v1/api/companies/${companyId}/dashboard`);
 }
 
 export function getBookings(
   companyId: string,
-  period: string = 'today',
+  period: string = "today",
   startDate?: string,
-  endDate?: string
+  endDate?: string,
 ): Promise<BookingRow[]> {
-  const today = new Date().toLocaleDateString('en-GB').replace(/\//g, '-'); // dd-MM-yyyy
+  const today = new Date().toLocaleDateString("en-GB").replace(/\//g, "-"); // dd-MM-yyyy
   const start = startDate ?? today;
   const end = endDate ?? today;
   return apiRequest<BookingRow[]>(
-    `/v1/api/companies/${companyId}/bookings?period=${period}&startDate=${start}&endDate=${end}`
+    `/v1/api/companies/${companyId}/bookings?period=${period}&startDate=${start}&endDate=${end}`,
   );
 }
 
 // NEW: Function to send booking to Java Backend
-export function createBooking(companyId: string, payload: CreateBookingPayload): Promise<any> {
+export function createBooking(
+  companyId: string,
+  payload: CreateBookingPayload,
+): Promise<any> {
   return apiRequest<any>(`/v1/api/companies/${companyId}/bookings`, {
-    method: 'POST',
+    method: "POST",
     body: JSON.stringify(payload),
   });
 }
 
-export function getCustomers(companyId: string, search?: string): Promise<CustomerRow[]> {
-  const q = search ? `?search=${encodeURIComponent(search)}` : '';
-  return apiRequest<CustomerRow[]>(`/v1/api/companies/${companyId}/customers${q}`);
+export function getCustomers(
+  companyId: string,
+  search?: string,
+): Promise<CustomerRow[]> {
+  const q = search ? `?search=${encodeURIComponent(search)}` : "";
+  return apiRequest<CustomerRow[]>(
+    `/v1/api/companies/${companyId}/customers${q}`,
+  );
 }
 
-export function createCustomer(companyId: string, payload: CreateCustomerPayload): Promise<CustomerRow> {
+export function createCustomer(
+  companyId: string,
+  payload: CreateCustomerPayload,
+): Promise<CustomerRow> {
   return apiRequest<CustomerRow>(`/v1/api/companies/${companyId}/customers`, {
-    method: 'POST',
+    method: "POST",
     body: JSON.stringify(payload),
   });
 }
 
-export function getSubscriptionPlans(companyId: string): Promise<SubscriptionPlan[]> {
-  return apiRequest<SubscriptionPlan[]>(`/v1/api/companies/${companyId}/subscription-plans`);
+export function getSubscriptionPlans(
+  companyId: string,
+): Promise<SubscriptionPlan[]> {
+  return apiRequest<SubscriptionPlan[]>(
+    `/v1/api/companies/${companyId}/subscription-plans`,
+  );
 }
 
-export function createSubscriptionPlan(companyId: string, payload: Omit<SubscriptionPlan, 'id' | 'isActive'>): Promise<SubscriptionPlan> {
-  return apiRequest<SubscriptionPlan>(`/v1/api/companies/${companyId}/subscription-plans`, {
-    method: 'POST',
-    body: JSON.stringify(payload),
-  });
+export function createSubscriptionPlan(
+  companyId: string,
+  payload: Omit<SubscriptionPlan, "id" | "isActive">,
+): Promise<SubscriptionPlan> {
+  return apiRequest<SubscriptionPlan>(
+    `/v1/api/companies/${companyId}/subscription-plans`,
+    {
+      method: "POST",
+      body: JSON.stringify(payload),
+    },
+  );
 }
 
-export function getCompanySubscriptions(companyId: string, status = 'ACTIVE'): Promise<Subscription[]> {
-  return apiRequest<Subscription[]>(`/v1/api/companies/${companyId}/subscriptions?status=${status}`);
+export function updateSubscriptionPlan(
+  companyId: string,
+  planId: string,
+  payload: Partial<SubscriptionPlan>,
+): Promise<SubscriptionPlan> {
+  return apiRequest<SubscriptionPlan>(
+    `/v1/api/companies/${companyId}/subscription-plans/${planId}`,
+    {
+      method: "PUT",
+      body: JSON.stringify(payload),
+    },
+  );
 }
 
-export function getCustomerSubscriptions(companyId: string, customerId: number): Promise<Subscription[]> {
-  return apiRequest<Subscription[]>(`/v1/api/companies/${companyId}/customers/${customerId}/subscriptions`);
+export function getCompanySubscriptions(
+  companyId: string,
+  status = "ACTIVE",
+): Promise<Subscription[]> {
+  return apiRequest<Subscription[]>(
+    `/v1/api/companies/${companyId}/subscriptions?status=${status}`,
+  );
+}
+
+export function getCustomerSubscriptions(
+  companyId: string,
+  customerId: number,
+): Promise<Subscription[]> {
+  return apiRequest<Subscription[]>(
+    `/v1/api/companies/${companyId}/customers/${customerId}/subscriptions`,
+  );
 }
 
 export function assignSubscription(
   companyId: string,
   customerId: number,
-  payload: AssignSubscriptionPayload
+  payload: AssignSubscriptionPayload,
 ): Promise<Subscription> {
   return apiRequest<Subscription>(
     `/v1/api/companies/${companyId}/customers/${customerId}/subscriptions`,
-    { method: 'POST', body: JSON.stringify(payload) }
+    { method: "POST", body: JSON.stringify(payload) },
   );
 }
